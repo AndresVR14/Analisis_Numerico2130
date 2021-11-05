@@ -7,6 +7,7 @@ import scipy.integrate as inte
 #@ n: numero de x
 #@ a y b los intervalos de la integral
 #@ f: La funcion a integrar
+
 def simpson13(n,a, b, f, ep):
     #calculamos h
     h = (b - a) / n
@@ -15,6 +16,7 @@ def simpson13(n,a, b, f, ep):
     e=1
     i=0
     rest = 0
+    #resultado de la integral evaluada en los puntos dados
     inteo = inte.quad(f,a,b)
     while e>ep:
         #calculamos la x
@@ -31,6 +33,7 @@ def simpson13(n,a, b, f, ep):
         suma = suma + fx(a, f) + fx(b, f)
         #Multiplicamos por h/3
         rest = suma * (h / 3)
+	#Se realiza el error de truncamiento entre el valor real y el resultado dado de cada iteracion
         e=inteo[0]-rest
     
     #Retornamos el resultado
@@ -42,7 +45,6 @@ def fx(x, f):
     
     
 
-#valores de ejemplo para la funcion sin(x) con intervalos de
 n=100000
 a = 0.0
 b = 2.0
