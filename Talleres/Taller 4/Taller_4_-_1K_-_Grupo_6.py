@@ -1,12 +1,7 @@
-from math import *
-import numpy as np
-import sympy as sp
+from scipy.interpolate import lagrange
+import matplotlib.pyplot as plt
 import scipy.integrate as inte
 
-#Definimos la funcion
-#@ n: numero de x
-#@ a y b los intervalos de la integral
-#@ f: La funcion a integrar
 
 def simpson13(n,a, b, f, ep):
     #calculamos h
@@ -16,7 +11,6 @@ def simpson13(n,a, b, f, ep):
     e=1
     i=0
     rest = 0
-    #resultado de la integral evaluada en los puntos dados
     inteo = inte.quad(f,a,b)
     while e>ep:
         #calculamos la x
@@ -33,24 +27,44 @@ def simpson13(n,a, b, f, ep):
         suma = suma + fx(a, f) + fx(b, f)
         #Multiplicamos por h/3
         rest = suma * (h / 3)
-	#Se realiza el error de truncamiento entre el valor real y el resultado dado de cada iteracion
-        e=inteo[0]-rest
+        e=abs(inteo[0])-rest
     
     #Retornamos el resultado
-    return (rest, i, e)
+    return (rest, i)
 
 #Funcion que nos ayuda a evaluar las funciones
 def fx(x, f):
     return f(x)
+
+def main():
+    #definicion de puntos
+    x1 = [0,4,8,16,20,24,28,32,36]
+    y1 = [0,6,8,8.5,9,8,7,5,0]
+    y2 = [0,-3,-2.5,-2.8,-3.4,-4.2,-4,-2.5,0]
+    
+    plt.plot(x1,y1)
+    plt.plot(x1,y2)
+    plt.tight_layout()
+    plt.figure(dpi = 150)
+    plt.show()
+    
+    #interpolacion lagrange para la obtencion del polinomio
+    f1  = lagrange(x1, y1)
+    f2 = lagrange (x1,y2)
     
     
+    #Definicion de parametros para la funcion de simpson     
+    n= 10000
+    a = 0
+    b = 36
+    ep= 0.00000001
+    valor1, i1 = simpson13(n, a, b, f1, ep)
+    valor2, i2 = simpson13(n, a, b, f2, ep)
+    total = abs(valor1)+abs(valor2)
+    print("El area de aproximada afectada es de", total)
 
-n=100000
-a = 0.0
-b = 2.0
-f = lambda x: np.sqrt(1+np.cos(x)**2)
-e=0.00001
+main()
 
-resultado, i, e= simpson13(n, a, b, f, e)
-print("El resultado de la integral es {} y se realizo en {} iteraciones".format(resultado,i))
-print("El error comparado con la solución exacta es de: ", e)
+        
+
+
