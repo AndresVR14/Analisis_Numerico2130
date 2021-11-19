@@ -8,16 +8,16 @@ warnings.simplefilter("ignore")
 #Metodo Runge Kutta
 def rungeKutta(v, lorenz):
     
-    h= 0.05
+    h= 1
     lista_t = np.arange(1,50,0.002)   
-    X,Y,Z=[],[],[]
+    X,Y=[],[]
     
     def fun(v):   
-        x,y,z = (v[0], v[1], v[2])
-        fx, fy, fz = lorenz(x,y,z)
-        return np.array([fx,fy,fz],float)
+        x,y = (v[0], v[1])
+        fx, fy = lorenz(x,y)
+        return np.array([fx,fy],float)
       
-    for t in 100:   
+    for t in range(4500):   
         k1=h*fun(v)
         k2=h*fun(v+(0.5*k1))
         k3=h*fun(v+(0.5*k2))
@@ -27,32 +27,34 @@ def rungeKutta(v, lorenz):
         
         X.append(v[0])
         Y.append(v[1])
-        Z.append(v[2])
-    return np.array([X,Y,Z])
+    return np.array([X,Y])
 
 
 #Sistema de lorenz
-def lorenz(x,y,z):
+def lorenz(x,y):
     
-    f1 = b*(-x+y)
-    f2 = ((c*x)-y)-(x*z)
-    f3 = (x*y)-(a*z)
+    f1 = -0.06 * x * 4 * y/4500
+    f2 = 0.06 * x * 4* y/4500 - 0.021 * y
+    f3 = 0.021 * y
     
     #f1 = (a*x) + (y*z)
     #f2 = b*(y-z)
     #f3 = (-x*y) + ((c*y)-z)
-    return f1, f2, f3
+    return f1, f2
 
-a = 8/3
-b = 10
-c = 28
-v=[1,1,1] #variables x,y,z
+a = 10/4500
+b = 4500-a
+c = 0
+v=[1,1] #variables x,y,z
 
 #FUNCION
-x,y,z = rungeKutta(v, lorenz)
+x,y = rungeKutta(v, lorenz)
+
+print(x)
+print(y)
 
 #GRAFICAR
 fig = plt.figure()
 ax = Axes3D(fig)
-ax.plot(x,y,z)
+ax.plot(x,y)
 plt.show()
